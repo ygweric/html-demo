@@ -110,7 +110,7 @@
             cursor: not-allowed;
         }
         
-        .path-box {gi
+        .path-box {
             flex: 1;
             display: flex;
             align-items: center;
@@ -308,6 +308,10 @@
             background: #106ebe;
         }
         
+        .empty-state .btn[style*="background: #666"]:hover {
+            background: #555 !important;
+        }
+        
         /* 加载状态 */
         .loading {
             display: flex;
@@ -468,12 +472,253 @@
             background: #e0e0e0;
             margin: 4px 0;
         }
+        
+        /* ==================== 左侧边栏 ==================== */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+        
+        .sidebar-header h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .sidebar-header-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .sidebar-header-btn {
+            background: none;
+            border: none;
+            padding: 4px 6px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 3px;
+            color: #666;
+        }
+        
+        .sidebar-header-btn:hover {
+            background: #e5f3ff;
+            color: #0078d7;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        
+        .saved-folder-list {
+            list-style: none;
+        }
+        
+        .saved-folder-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 4px;
+            transition: all 0.15s;
+            position: relative;
+        }
+        
+        .saved-folder-item:hover {
+            background: #e5f3ff;
+        }
+        
+        .saved-folder-item.active {
+            background: #cce8ff;
+        }
+        
+        .saved-folder-item .folder-icon {
+            font-size: 18px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .saved-folder-item .folder-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .saved-folder-item .folder-name {
+            font-size: 13px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .saved-folder-item .folder-date {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        .saved-folder-item .folder-status {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+        
+        .saved-folder-item .folder-status.granted {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .saved-folder-item .folder-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .saved-folder-item .folder-actions {
+            display: none;
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .saved-folder-item:hover .folder-actions {
+            display: flex;
+            gap: 2px;
+        }
+        
+        .folder-action-btn {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 2px 6px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 3px;
+            color: #666;
+        }
+        
+        .folder-action-btn:hover {
+            background: #f0f0f0;
+            border-color: #ccc;
+        }
+        
+        .folder-action-btn.delete:hover {
+            background: #ffe5e5;
+            border-color: #ffcccc;
+            color: #c00;
+        }
+        
+        .sidebar-empty {
+            text-align: center;
+            padding: 30px 16px;
+            color: #888;
+        }
+        
+        .sidebar-empty .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        
+        .sidebar-empty p {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .sidebar-footer {
+            padding: 8px;
+            border-top: 1px solid #e0e0e0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .sidebar-footer-btn {
+            width: 100%;
+            padding: 8px;
+            background: #0078d7;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .sidebar-footer-btn:hover {
+            background: #106ebe;
+        }
+        
+        .file-browser-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* 折叠侧边栏 */
+        .sidebar.collapsed {
+            width: 48px;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3,
+        .sidebar.collapsed .sidebar-content,
+        .sidebar.collapsed .sidebar-footer {
+            display: none;
+        }
+        
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            padding: 12px 8px;
+        }
+        
+        .toggle-sidebar-btn {
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            border-radius: 3px;
+        }
+        
+        .toggle-sidebar-btn:hover {
+            background: #e5f3ff;
+            color: #0078d7;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- 工具栏 -->
         <div class="toolbar">
+            <button id="toggleSidebar" class="toggle-sidebar-btn" title="切换侧边栏">☰</button>
+            <div class="toolbar-separator"></div>
             <button id="selectRoot" class="toolbar-btn">
                 <span class="icon">📂</span>
                 <span>打开文件夹</span>
@@ -485,58 +730,93 @@
             </button>
         </div>
         
-        <!-- 地址栏 -->
-        <div class="address-bar">
-            <div class="nav-buttons">
-                <button id="backBtn" class="nav-btn" disabled title="后退">◀</button>
-                <button id="forwardBtn" class="nav-btn" disabled title="前进">▶</button>
-                <button id="upBtn" class="nav-btn" disabled title="向上">▲</button>
-            </div>
-            <div class="path-box">
-                <div class="breadcrumb" id="breadcrumb">
-                    <span style="color: #888;">请选择一个文件夹</span>
+        <!-- 主布局 -->
+        <div class="main-layout">
+            <!-- 左侧边栏 - 保存的文件夹列表 -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h3>📚 已授权文件夹</h3>
+                    <div class="sidebar-header-actions">
+                        <button class="sidebar-header-btn" id="clearAllBtn" title="清除全部">🗑️</button>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- 文件浏览区域 -->
-        <div class="file-browser">
-            <!-- 表头 -->
-            <div class="file-header" id="fileHeader" style="display: none;">
-                <div class="header-cell" data-sort="name">
-                    名称 <span class="sort-icon">▲</span>
+                <div class="sidebar-content">
+                    <ul class="saved-folder-list" id="savedFolderList">
+                        <!-- 动态生成 -->
+                    </ul>
+                    <div class="sidebar-empty" id="sidebarEmpty">
+                        <div class="icon">📁</div>
+                        <p>暂无保存的文件夹<br>打开文件夹后会自动保存</p>
+                    </div>
                 </div>
-                <div class="header-cell" data-sort="modified">
-                    修改日期
-                </div>
-                <div class="header-cell" data-sort="type">
-                    类型
-                </div>
-                <div class="header-cell" data-sort="size">
-                    大小
+                <div class="sidebar-footer">
+                    <button class="sidebar-footer-btn" id="authorizeAllBtn" style="background: #009688;">
+                        <span>🔓</span>
+                        <span>一键授权全部</span>
+                    </button>
+                    <button class="sidebar-footer-btn" id="addFolderBtn">
+                        <span>➕</span>
+                        <span>添加文件夹</span>
+                    </button>
                 </div>
             </div>
             
-            <!-- 文件列表容器 -->
-            <div class="file-list-container" id="fileListContainer">
-                <div class="empty-state" id="emptyState">
-                    <div class="icon">📁</div>
-                    <h3>欢迎使用文件管理器</h3>
-                    <p>点击下方按钮选择一个文件夹开始浏览</p>
-                    <button class="btn" id="selectRootAlt">选择文件夹</button>
+            <!-- 右侧主区域 -->
+            <div class="file-browser-wrapper">
+                <!-- 地址栏 -->
+                <div class="address-bar">
+                    <div class="nav-buttons">
+                        <button id="backBtn" class="nav-btn" disabled title="后退">◀</button>
+                        <button id="forwardBtn" class="nav-btn" disabled title="前进">▶</button>
+                        <button id="upBtn" class="nav-btn" disabled title="向上">▲</button>
+                    </div>
+                    <div class="path-box">
+                        <div class="breadcrumb" id="breadcrumb">
+                            <span style="color: #888;">请选择一个文件夹</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="loading" id="loading" style="display: none;">
-                    <div class="loading-spinner"></div>
-                    <span>正在加载...</span>
+                <!-- 文件浏览区域 -->
+                <div class="file-browser">
+                    <!-- 表头 -->
+                    <div class="file-header" id="fileHeader" style="display: none;">
+                        <div class="header-cell" data-sort="name">
+                            名称 <span class="sort-icon">▲</span>
+                        </div>
+                        <div class="header-cell" data-sort="modified">
+                            修改日期
+                        </div>
+                        <div class="header-cell" data-sort="type">
+                            类型
+                        </div>
+                        <div class="header-cell" data-sort="size">
+                            大小
+                        </div>
+                    </div>
+                    
+                    <!-- 文件列表容器 -->
+                    <div class="file-list-container" id="fileListContainer">
+                        <div class="empty-state" id="emptyState">
+                            <div class="icon">📁</div>
+                            <h3>欢迎使用文件管理器</h3>
+                            <p>从左侧选择已保存的文件夹，或点击下方按钮添加新文件夹</p>
+                            <button class="btn" id="selectRootAlt">选择文件夹</button>
+                        </div>
+                        
+                        <div class="loading" id="loading" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <span>正在加载...</span>
+                        </div>
+                        
+                        <div class="error-state" id="errorState" style="display: none;">
+                            <div class="icon">⚠️</div>
+                            <p>无法访问此目录</p>
+                        </div>
+                        
+                        <ul class="file-list" id="fileList" style="display: none;"></ul>
+                    </div>
                 </div>
-                
-                <div class="error-state" id="errorState" style="display: none;">
-                    <div class="icon">⚠️</div>
-                    <p>无法访问此目录</p>
-                </div>
-                
-                <ul class="file-list" id="fileList" style="display: none;"></ul>
             </div>
         </div>
         
@@ -573,6 +853,7 @@
     <script>
         // 全局变量
         let currentDirectoryHandle = null;
+        let rootDirectoryHandle = null;
         let pathHistory = [];
         let historyIndex = -1;
         let navigationHistory = [];
@@ -580,10 +861,21 @@
         let selectedItem = null;
         let sortBy = 'name';
         let sortAsc = true;
+        let db = null;
+        
+        const DB_NAME = 'FileManagerDB';
+        const STORE_NAME = 'directoryHandles';
         
         // DOM 元素
         const selectRootBtn = document.getElementById('selectRoot');
         const selectRootAltBtn = document.getElementById('selectRootAlt');
+        const addFolderBtn = document.getElementById('addFolderBtn');
+        const authorizeAllBtn = document.getElementById('authorizeAllBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const toggleSidebarBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const savedFolderList = document.getElementById('savedFolderList');
+        const sidebarEmpty = document.getElementById('sidebarEmpty');
         const refreshBtn = document.getElementById('refreshBtn');
         const backBtn = document.getElementById('backBtn');
         const forwardBtn = document.getElementById('forwardBtn');
@@ -602,14 +894,369 @@
         const closeDetails = document.getElementById('closeDetails');
         const contextMenu = document.getElementById('contextMenu');
         
+        let currentFolderId = null; // 当前激活的文件夹ID
+        
+        // ==================== IndexedDB 操作 ====================
+        
+        // 初始化 IndexedDB
+        async function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 2); // 升级版本号
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const database = event.target.result;
+                    // 删除旧的 store（如果存在）
+                    if (database.objectStoreNames.contains(STORE_NAME)) {
+                        database.deleteObjectStore(STORE_NAME);
+                    }
+                    // 创建新的 store
+                    database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                };
+            });
+        }
+        
+        // 生成唯一ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // 保存目录句柄到 IndexedDB
+        async function saveDirectoryHandle(handle) {
+            // 检查是否已存在相同名称的目录（简单去重）
+            const existing = await getAllSavedDirectories();
+            const existingItem = existing.find(item => item.name === handle.name);
+            
+            if (existingItem) {
+                // 更新现有记录
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    
+                    existingItem.handle = handle;
+                    existingItem.lastAccessedAt = Date.now();
+                    
+                    const request = store.put(existingItem);
+                    request.onsuccess = () => resolve(existingItem.id);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+            
+            // 创建新记录
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                
+                const id = generateId();
+                const data = {
+                    id: id,
+                    handle: handle,
+                    name: handle.name,
+                    savedAt: Date.now(),
+                    lastAccessedAt: Date.now()
+                };
+                
+                const request = store.put(data);
+                request.onsuccess = () => resolve(id);
+                request.onerror = () => reject(request.error);
+            });
+        }
+        
+        // 获取所有保存的目录
+        async function getAllSavedDirectories() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                
+                request.onsuccess = () => {
+                    // 按最后访问时间排序
+                    const results = request.result.sort((a, b) => 
+                        (b.lastAccessedAt || b.savedAt) - (a.lastAccessedAt || a.savedAt)
+                    );
+                    resolve(results);
+                };
+                request.onerror = () => reject(request.error);
+            });
+        }
+        
+        // 获取单个目录
+        async function getSavedDirectory(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.get(id);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+        
+        // 更新目录的最后访问时间
+        async function updateDirectoryAccessTime(id) {
+            const item = await getSavedDirectory(id);
+            if (item) {
+                item.lastAccessedAt = Date.now();
+                return new Promise((resolve, reject) => {
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.put(item);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+        }
+        
+        // 删除单个目录
+        async function deleteSavedDirectory(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.delete(id);
+                
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+        
+        // 清除所有保存的目录
+        async function clearAllSavedDirectories() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.clear();
+                
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+        
+        // 检查并请求权限
+        async function verifyPermission(handle, readWrite = false) {
+            const options = { mode: readWrite ? 'readwrite' : 'read' };
+            
+            // 检查当前权限状态
+            if ((await handle.queryPermission(options)) === 'granted') {
+                return true;
+            }
+            
+            // 请求权限（需要用户交互触发）
+            if ((await handle.requestPermission(options)) === 'granted') {
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // ==================== 侧边栏渲染 ====================
+        
+        // 渲染保存的文件夹列表
+        async function renderSavedFolders() {
+            const folders = await getAllSavedDirectories();
+            savedFolderList.innerHTML = '';
+            
+            if (folders.length === 0) {
+                sidebarEmpty.style.display = 'block';
+                return;
+            }
+            
+            sidebarEmpty.style.display = 'none';
+            
+            // 使用 for...of 以便使用 await
+            for (const folder of folders) {
+                const li = document.createElement('li');
+                li.className = 'saved-folder-item' + (folder.id === currentFolderId ? ' active' : '');
+                li.dataset.id = folder.id;
+                
+                const savedDate = new Date(folder.savedAt).toLocaleDateString();
+                
+                // 检查权限状态
+                let statusHtml = '';
+                try {
+                    const permissionState = await folder.handle.queryPermission({ mode: 'read' });
+                    if (permissionState === 'granted') {
+                        statusHtml = '<span class="folder-status granted">已授权</span>';
+                    } else {
+                        statusHtml = '<span class="folder-status pending">需授权</span>';
+                    }
+                } catch (e) {
+                    statusHtml = '<span class="folder-status pending">需授权</span>';
+                }
+                
+                li.innerHTML = `
+                    <span class="folder-icon">📁</span>
+                    <div class="folder-info">
+                        <div class="folder-name" title="${folder.name}">${folder.name} ${statusHtml}</div>
+                        <div class="folder-date">保存于 ${savedDate}</div>
+                    </div>
+                    <div class="folder-actions">
+                        <button class="folder-action-btn delete" title="删除" data-id="${folder.id}">✕</button>
+                    </div>
+                `;
+                
+                // 点击打开文件夹
+                li.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('folder-action-btn')) {
+                        openSavedFolder(folder.id);
+                    }
+                });
+                
+                // 删除按钮
+                li.querySelector('.delete').addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (confirm(`确定要删除 "${folder.name}" 的记录吗？`)) {
+                        await deleteSavedDirectory(folder.id);
+                        if (folder.id === currentFolderId) {
+                            currentFolderId = null;
+                            resetToEmptyState();
+                        }
+                        await renderSavedFolders();
+                    }
+                });
+                
+                savedFolderList.appendChild(li);
+            }
+        }
+        
+        // 打开保存的文件夹
+        async function openSavedFolder(id) {
+            try {
+                const saved = await getSavedDirectory(id);
+                if (!saved || !saved.handle) {
+                    alert('无法找到该文件夹记录');
+                    return;
+                }
+                
+                // 请求权限
+                const hasPermission = await verifyPermission(saved.handle);
+                if (!hasPermission) {
+                    alert('权限被拒绝，无法访问该目录');
+                    return;
+                }
+                
+                // 更新访问时间
+                await updateDirectoryAccessTime(id);
+                
+                currentFolderId = id;
+                rootDirectoryHandle = saved.handle;
+                currentDirectoryHandle = saved.handle;
+                pathHistory = [saved.handle];
+                historyIndex = 0;
+                navigationHistory = [{ handle: saved.handle, path: [saved.handle] }];
+                
+                await loadDirectoryContents(saved.handle);
+                updateBreadcrumb();
+                updateNavigationButtons();
+                await renderSavedFolders(); // 更新激活状态
+                
+            } catch (error) {
+                console.error('打开文件夹失败:', error);
+                alert('打开失败: ' + error.message);
+            }
+        }
+        
+        // 重置到空状态
+        function resetToEmptyState() {
+            fileHeader.style.display = 'none';
+            fileList.style.display = 'none';
+            emptyState.style.display = 'flex';
+            breadcrumb.innerHTML = '<span style="color: #888;">请选择一个文件夹</span>';
+            itemCount.textContent = '0 个项目';
+            refreshBtn.disabled = true;
+        }
+        
+        // ==================== 事件绑定 ====================
+        
         // 事件绑定
         selectRootBtn.addEventListener('click', selectRootDirectory);
         selectRootAltBtn.addEventListener('click', selectRootDirectory);
+        addFolderBtn.addEventListener('click', selectRootDirectory);
+        authorizeAllBtn.addEventListener('click', authorizeAllFolders);
+        clearAllBtn.addEventListener('click', clearAllFolders);
+        toggleSidebarBtn.addEventListener('click', toggleSidebar);
         refreshBtn.addEventListener('click', refreshDirectory);
         backBtn.addEventListener('click', goBack);
         forwardBtn.addEventListener('click', goForward);
         upBtn.addEventListener('click', goUp);
         closeDetails.addEventListener('click', () => detailsPanel.classList.remove('open'));
+        
+        // 切换侧边栏
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+        }
+        
+        // 一键授权所有文件夹
+        async function authorizeAllFolders() {
+            const folders = await getAllSavedDirectories();
+            if (folders.length === 0) {
+                alert('没有保存的文件夹');
+                return;
+            }
+            
+            let successCount = 0;
+            let failCount = 0;
+            const results = [];
+            
+            // 显示进度提示
+            const originalText = authorizeAllBtn.innerHTML;
+            authorizeAllBtn.disabled = true;
+            
+            for (let i = 0; i < folders.length; i++) {
+                const folder = folders[i];
+                authorizeAllBtn.innerHTML = `<span>🔄</span><span>授权中 ${i + 1}/${folders.length}...</span>`;
+                
+                try {
+                    const hasPermission = await verifyPermission(folder.handle);
+                    if (hasPermission) {
+                        successCount++;
+                        results.push({ name: folder.name, status: '✅ 已授权' });
+                        // 更新访问时间
+                        await updateDirectoryAccessTime(folder.id);
+                    } else {
+                        failCount++;
+                        results.push({ name: folder.name, status: '❌ 已拒绝' });
+                    }
+                } catch (error) {
+                    failCount++;
+                    results.push({ name: folder.name, status: '⚠️ 失败: ' + error.message });
+                }
+            }
+            
+            authorizeAllBtn.innerHTML = originalText;
+            authorizeAllBtn.disabled = false;
+            
+            // 显示结果
+            let resultMessage = `授权完成！\n\n✅ 成功: ${successCount} 个\n❌ 失败: ${failCount} 个\n\n详细结果:\n`;
+            results.forEach(r => {
+                resultMessage += `${r.status} ${r.name}\n`;
+            });
+            
+            alert(resultMessage);
+            
+            // 刷新列表
+            await renderSavedFolders();
+        }
+        
+        // 清除所有文件夹
+        async function clearAllFolders() {
+            const folders = await getAllSavedDirectories();
+            if (folders.length === 0) {
+                alert('没有保存的文件夹');
+                return;
+            }
+            
+            if (confirm(`确定要清除所有 ${folders.length} 个保存的文件夹记录吗？`)) {
+                await clearAllSavedDirectories();
+                currentFolderId = null;
+                resetToEmptyState();
+                await renderSavedFolders();
+            }
+        }
         
         // 表头排序
         document.querySelectorAll('.header-cell').forEach(cell => {
@@ -660,14 +1307,19 @@
                     mode: 'read'
                 });
                 
+                rootDirectoryHandle = directoryHandle;
                 currentDirectoryHandle = directoryHandle;
                 pathHistory = [directoryHandle];
                 historyIndex = 0;
                 navigationHistory = [{ handle: directoryHandle, path: [directoryHandle] }];
                 
+                // 保存到 IndexedDB 并获取ID
+                currentFolderId = await saveDirectoryHandle(directoryHandle);
+                
                 await loadDirectoryContents(directoryHandle);
                 updateBreadcrumb();
                 updateNavigationButtons();
+                await renderSavedFolders(); // 更新侧边栏
                 
             } catch (error) {
                 console.log('目录选择取消或出错:', error);
@@ -1116,7 +1768,22 @@
                 请使用 Chrome 86+、Edge 86+ 或 Opera 72+ 等现代浏览器</p>
             `;
             selectRootBtn.disabled = true;
+            addFolderBtn.disabled = true;
         }
+        
+        // 页面加载时初始化
+        async function init() {
+            try {
+                await initDB();
+                // 渲染已保存的文件夹列表
+                await renderSavedFolders();
+            } catch (error) {
+                console.error('初始化失败:', error);
+            }
+        }
+        
+        // 启动初始化
+        init();
     </script>
 </body>
 </html>
