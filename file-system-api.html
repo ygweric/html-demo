@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浏览器文件管理器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f0f0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+        
+        /* 工具栏 */
+        .toolbar {
+            background: linear-gradient(180deg, #f9f9f9 0%, #e8e8e8 100%);
+            border-bottom: 1px solid #d0d0d0;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .toolbar-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+        
+        .toolbar-btn:hover {
+            background: rgba(0, 120, 215, 0.1);
+            border-color: rgba(0, 120, 215, 0.3);
+        }
+        
+        .toolbar-btn:active {
+            background: rgba(0, 120, 215, 0.2);
+        }
+        
+        .toolbar-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .toolbar-btn .icon {
+            font-size: 16px;
+        }
+        
+        .toolbar-separator {
+            width: 1px;
+            height: 24px;
+            background: #c0c0c0;
+            margin: 0 4px;
+        }
+        
+        /* 地址栏 */
+        .address-bar {
+            background: #fff;
+            border-bottom: 1px solid #d0d0d0;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .nav-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.15s;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: #e5f3ff;
+            color: #0078d7;
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .path-box {gi
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #c0c0c0;
+            border-radius: 3px;
+            padding: 4px 8px;
+            min-height: 30px;
+        }
+        
+        .path-box:focus-within {
+            border-color: #0078d7;
+            box-shadow: 0 0 0 1px rgba(0, 120, 215, 0.3);
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2px;
+        }
+        
+        .breadcrumb-item {
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #333;
+            transition: background 0.15s;
+        }
+        
+        .breadcrumb-item:hover {
+            background: #e5f3ff;
+        }
+        
+        .breadcrumb-separator {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        /* 文件浏览区域 */
+        .file-browser {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* 表头 */
+        .file-header {
+            display: grid;
+            grid-template-columns: minmax(300px, 2fr) 150px 120px 180px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #666;
+            user-select: none;
+        }
+        
+        .header-cell {
+            padding: 8px 12px;
+            border-right: 1px solid #e0e0e0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .header-cell:hover {
+            background: #e8e8e8;
+        }
+        
+        .header-cell:last-child {
+            border-right: none;
+        }
+        
+        .sort-icon {
+            font-size: 10px;
+            opacity: 0.6;
+        }
+        
+        /* 文件列表 */
+        .file-list-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .file-list {
+            list-style: none;
+        }
+        
+        .file-item {
+            display: grid;
+            grid-template-columns: minmax(300px, 2fr) 150px 120px 180px;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: default;
+            user-select: none;
+            transition: background 0.1s;
+        }
+        
+        .file-item:hover {
+            background: #e5f3ff;
+        }
+        
+        .file-item.selected {
+            background: #cce8ff;
+        }
+        
+        .file-item.selected:hover {
+            background: #b8dfff;
+        }
+        
+        .file-cell {
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .file-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .file-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .file-item.folder .file-name {
+            color: #0078d7;
+        }
+        
+        /* 状态栏 */
+        .status-bar {
+            background: #f5f5f5;
+            border-top: 1px solid #d0d0d0;
+            padding: 4px 12px;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #888;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            font-size: 13px;
+        }
+        
+        .empty-state .btn {
+            margin-top: 20px;
+            background: #0078d7;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .empty-state .btn:hover {
+            background: #106ebe;
+        }
+        
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #0078d7;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 12px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 错误提示 */
+        .error-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #c00;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .error-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        /* 文件详情面板 */
+        .details-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 320px;
+            height: 100%;
+            background: #fff;
+            border-left: 1px solid #d0d0d0;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.2s ease;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .details-panel.open {
+            transform: translateX(0);
+        }
+        
+        .details-header {
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .details-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .details-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            padding: 4px 8px;
+        }
+        
+        .details-close:hover {
+            color: #333;
+        }
+        
+        .details-content {
+            padding: 16px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .details-icon {
+            text-align: center;
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .details-name {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            word-break: break-word;
+        }
+        
+        .details-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+        
+        .details-label {
+            color: #666;
+        }
+        
+        .details-value {
+            color: #333;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+        
+        /* 右键菜单 */
+        .context-menu {
+            position: fixed;
+            background: #fff;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .context-menu.show {
+            display: block;
+        }
+        
+        .context-menu-item {
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .context-menu-item:hover {
+            background: #e5f3ff;
+        }
+        
+        .context-menu-separator {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <button id="selectRoot" class="toolbar-btn">
+                <span class="icon">📂</span>
+                <span>打开文件夹</span>
+            </button>
+            <div class="toolbar-separator"></div>
+            <button id="refreshBtn" class="toolbar-btn" disabled>
+                <span class="icon">🔄</span>
+                <span>刷新</span>
+            </button>
+        </div>
+        
+        <!-- 地址栏 -->
+        <div class="address-bar">
+            <div class="nav-buttons">
+                <button id="backBtn" class="nav-btn" disabled title="后退">◀</button>
+                <button id="forwardBtn" class="nav-btn" disabled title="前进">▶</button>
+                <button id="upBtn" class="nav-btn" disabled title="向上">▲</button>
+            </div>
+            <div class="path-box">
+                <div class="breadcrumb" id="breadcrumb">
+                    <span style="color: #888;">请选择一个文件夹</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 文件浏览区域 -->
+        <div class="file-browser">
+            <!-- 表头 -->
+            <div class="file-header" id="fileHeader" style="display: none;">
+                <div class="header-cell" data-sort="name">
+                    名称 <span class="sort-icon">▲</span>
+                </div>
+                <div class="header-cell" data-sort="modified">
+                    修改日期
+                </div>
+                <div class="header-cell" data-sort="type">
+                    类型
+                </div>
+                <div class="header-cell" data-sort="size">
+                    大小
+                </div>
+            </div>
+            
+            <!-- 文件列表容器 -->
+            <div class="file-list-container" id="fileListContainer">
+                <div class="empty-state" id="emptyState">
+                    <div class="icon">📁</div>
+                    <h3>欢迎使用文件管理器</h3>
+                    <p>点击下方按钮选择一个文件夹开始浏览</p>
+                    <button class="btn" id="selectRootAlt">选择文件夹</button>
+                </div>
+                
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <span>正在加载...</span>
+                </div>
+                
+                <div class="error-state" id="errorState" style="display: none;">
+                    <div class="icon">⚠️</div>
+                    <p>无法访问此目录</p>
+                </div>
+                
+                <ul class="file-list" id="fileList" style="display: none;"></ul>
+            </div>
+        </div>
+        
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <span id="itemCount">0 个项目</span>
+            <span id="selectedInfo"></span>
+        </div>
+    </div>
+    
+    <!-- 文件详情面板 -->
+    <div class="details-panel" id="detailsPanel">
+        <div class="details-header">
+            <h3>详细信息</h3>
+            <button class="details-close" id="closeDetails">✕</button>
+        </div>
+        <div class="details-content" id="detailsContent"></div>
+    </div>
+    
+    <!-- 右键菜单 -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" id="menuOpen">
+            <span>📂</span> 打开
+        </div>
+        <div class="context-menu-item" id="menuDetails">
+            <span>ℹ️</span> 属性
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" id="menuRefresh">
+            <span>🔄</span> 刷新
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentDirectoryHandle = null;
+        let pathHistory = [];
+        let historyIndex = -1;
+        let navigationHistory = [];
+        let currentItems = [];
+        let selectedItem = null;
+        let sortBy = 'name';
+        let sortAsc = true;
+        
+        // DOM 元素
+        const selectRootBtn = document.getElementById('selectRoot');
+        const selectRootAltBtn = document.getElementById('selectRootAlt');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const backBtn = document.getElementById('backBtn');
+        const forwardBtn = document.getElementById('forwardBtn');
+        const upBtn = document.getElementById('upBtn');
+        const breadcrumb = document.getElementById('breadcrumb');
+        const fileHeader = document.getElementById('fileHeader');
+        const fileList = document.getElementById('fileList');
+        const fileListContainer = document.getElementById('fileListContainer');
+        const emptyState = document.getElementById('emptyState');
+        const loading = document.getElementById('loading');
+        const errorState = document.getElementById('errorState');
+        const itemCount = document.getElementById('itemCount');
+        const selectedInfo = document.getElementById('selectedInfo');
+        const detailsPanel = document.getElementById('detailsPanel');
+        const detailsContent = document.getElementById('detailsContent');
+        const closeDetails = document.getElementById('closeDetails');
+        const contextMenu = document.getElementById('contextMenu');
+        
+        // 事件绑定
+        selectRootBtn.addEventListener('click', selectRootDirectory);
+        selectRootAltBtn.addEventListener('click', selectRootDirectory);
+        refreshBtn.addEventListener('click', refreshDirectory);
+        backBtn.addEventListener('click', goBack);
+        forwardBtn.addEventListener('click', goForward);
+        upBtn.addEventListener('click', goUp);
+        closeDetails.addEventListener('click', () => detailsPanel.classList.remove('open'));
+        
+        // 表头排序
+        document.querySelectorAll('.header-cell').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const sort = cell.dataset.sort;
+                if (sortBy === sort) {
+                    sortAsc = !sortAsc;
+                } else {
+                    sortBy = sort;
+                    sortAsc = true;
+                }
+                updateSortIndicator();
+                renderFileList();
+            });
+        });
+        
+        // 点击空白处取消选择
+        fileListContainer.addEventListener('click', (e) => {
+            if (e.target === fileListContainer || e.target === fileList) {
+                clearSelection();
+            }
+        });
+        
+        // 隐藏右键菜单
+        document.addEventListener('click', () => {
+            contextMenu.classList.remove('show');
+        });
+        
+        // 右键菜单项
+        document.getElementById('menuOpen').addEventListener('click', () => {
+            if (selectedItem) {
+                openItem(selectedItem);
+            }
+        });
+        
+        document.getElementById('menuDetails').addEventListener('click', () => {
+            if (selectedItem) {
+                showDetails(selectedItem);
+            }
+        });
+        
+        document.getElementById('menuRefresh').addEventListener('click', refreshDirectory);
+        
+        // 选择根目录
+        async function selectRootDirectory() {
+            try {
+                const directoryHandle = await window.showDirectoryPicker({
+                    mode: 'read'
+                });
+                
+                currentDirectoryHandle = directoryHandle;
+                pathHistory = [directoryHandle];
+                historyIndex = 0;
+                navigationHistory = [{ handle: directoryHandle, path: [directoryHandle] }];
+                
+                await loadDirectoryContents(directoryHandle);
+                updateBreadcrumb();
+                updateNavigationButtons();
+                
+            } catch (error) {
+                console.log('目录选择取消或出错:', error);
+            }
+        }
+        
+        // 加载目录内容
+        async function loadDirectoryContents(directoryHandle) {
+            try {
+                showLoading();
+                currentItems = [];
+                
+                for await (const [name, handle] of directoryHandle.entries()) {
+                    const item = {
+                        name,
+                        handle,
+                        kind: handle.kind,
+                        size: 0,
+                        modified: null,
+                        type: ''
+                    };
+                    
+                    if (handle.kind === 'file') {
+                        try {
+                            const file = await handle.getFile();
+                            item.size = file.size;
+                            item.modified = file.lastModified;
+                            item.type = getFileType(name);
+                        } catch (e) {
+                            // 忽略无法读取的文件
+                        }
+                    } else {
+                        item.type = '文件夹';
+                    }
+                    
+                    currentItems.push(item);
+                }
+                
+                renderFileList();
+                hideLoading();
+                refreshBtn.disabled = false;
+                
+            } catch (error) {
+                console.error('加载目录失败:', error);
+                showError();
+            }
+        }
+        
+        // 渲染文件列表
+        function renderFileList() {
+            fileList.innerHTML = '';
+            
+            // 排序：文件夹在前
+            const sorted = [...currentItems].sort((a, b) => {
+                // 文件夹始终在前
+                if (a.kind !== b.kind) {
+                    return a.kind === 'directory' ? -1 : 1;
+                }
+                
+                // 按选定字段排序
+                let cmp = 0;
+                switch (sortBy) {
+                    case 'name':
+                        cmp = a.name.localeCompare(b.name, 'zh-CN');
+                        break;
+                    case 'modified':
+                        cmp = (a.modified || 0) - (b.modified || 0);
+                        break;
+                    case 'type':
+                        cmp = a.type.localeCompare(b.type, 'zh-CN');
+                        break;
+                    case 'size':
+                        cmp = a.size - b.size;
+                        break;
+                }
+                
+                return sortAsc ? cmp : -cmp;
+            });
+            
+            sorted.forEach(item => {
+                const li = document.createElement('li');
+                li.className = `file-item ${item.kind === 'directory' ? 'folder' : 'file'}`;
+                li.dataset.name = item.name;
+                
+                li.innerHTML = `
+                    <div class="file-cell file-name-cell">
+                        <span class="file-icon">${item.kind === 'directory' ? '📁' : getFileIcon(item.name)}</span>
+                        <span class="file-name">${item.name}</span>
+                    </div>
+                    <div class="file-cell">${item.modified ? formatDate(item.modified) : ''}</div>
+                    <div class="file-cell">${item.type}</div>
+                    <div class="file-cell">${item.kind === 'file' ? formatFileSize(item.size) : ''}</div>
+                `;
+                
+                // 单击选择
+                li.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectItem(li, item);
+                });
+                
+                // 双击打开
+                li.addEventListener('dblclick', () => {
+                    openItem(item);
+                });
+                
+                // 右键菜单
+                li.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    selectItem(li, item);
+                    showContextMenu(e.pageX, e.pageY);
+                });
+                
+                fileList.appendChild(li);
+            });
+            
+            fileHeader.style.display = 'grid';
+            fileList.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            // 更新状态栏
+            const folderCount = currentItems.filter(i => i.kind === 'directory').length;
+            const fileCount = currentItems.filter(i => i.kind === 'file').length;
+            itemCount.textContent = `${currentItems.length} 个项目 (${folderCount} 个文件夹, ${fileCount} 个文件)`;
+        }
+        
+        // 选择项目
+        function selectItem(element, item) {
+            clearSelection();
+            element.classList.add('selected');
+            selectedItem = item;
+            selectedInfo.textContent = `已选择: ${item.name}`;
+        }
+        
+        // 清除选择
+        function clearSelection() {
+            document.querySelectorAll('.file-item.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            selectedItem = null;
+            selectedInfo.textContent = '';
+        }
+        
+        // 打开项目
+        async function openItem(item) {
+            if (item.kind === 'directory') {
+                currentDirectoryHandle = item.handle;
+                pathHistory.push(item.handle);
+                
+                // 更新导航历史
+                historyIndex++;
+                navigationHistory = navigationHistory.slice(0, historyIndex);
+                navigationHistory.push({
+                    handle: item.handle,
+                    path: [...pathHistory]
+                });
+                
+                await loadDirectoryContents(item.handle);
+                updateBreadcrumb();
+                updateNavigationButtons();
+            } else {
+                showDetails(item);
+            }
+        }
+        
+        // 显示详情
+        async function showDetails(item) {
+            let content = `
+                <div class="details-icon">${item.kind === 'directory' ? '📁' : getFileIcon(item.name)}</div>
+                <div class="details-name">${item.name}</div>
+            `;
+            
+            if (item.kind === 'file') {
+                content += `
+                    <div class="details-row">
+                        <span class="details-label">类型</span>
+                        <span class="details-value">${item.type}</span>
+                    </div>
+                    <div class="details-row">
+                        <span class="details-label">大小</span>
+                        <span class="details-value">${formatFileSize(item.size)}</span>
+                    </div>
+                    <div class="details-row">
+                        <span class="details-label">修改时间</span>
+                        <span class="details-value">${item.modified ? formatDate(item.modified) : '未知'}</span>
+                    </div>
+                `;
+            } else {
+                content += `
+                    <div class="details-row">
+                        <span class="details-label">类型</span>
+                        <span class="details-value">文件夹</span>
+                    </div>
+                `;
+            }
+            
+            detailsContent.innerHTML = content;
+            detailsPanel.classList.add('open');
+        }
+        
+        // 右键菜单
+        function showContextMenu(x, y) {
+            contextMenu.style.left = x + 'px';
+            contextMenu.style.top = y + 'px';
+            contextMenu.classList.add('show');
+        }
+        
+        // 更新面包屑导航
+        function updateBreadcrumb() {
+            breadcrumb.innerHTML = '';
+            
+            pathHistory.forEach((handle, index) => {
+                const item = document.createElement('span');
+                item.className = 'breadcrumb-item';
+                item.textContent = handle.name || '根目录';
+                
+                item.addEventListener('click', async () => {
+                    pathHistory = pathHistory.slice(0, index + 1);
+                    currentDirectoryHandle = handle;
+                    
+                    historyIndex++;
+                    navigationHistory = navigationHistory.slice(0, historyIndex);
+                    navigationHistory.push({
+                        handle,
+                        path: [...pathHistory]
+                    });
+                    
+                    await loadDirectoryContents(handle);
+                    updateBreadcrumb();
+                    updateNavigationButtons();
+                });
+                
+                breadcrumb.appendChild(item);
+                
+                if (index < pathHistory.length - 1) {
+                    const sep = document.createElement('span');
+                    sep.className = 'breadcrumb-separator';
+                    sep.textContent = ' › ';
+                    breadcrumb.appendChild(sep);
+                }
+            });
+        }
+        
+        // 更新导航按钮状态
+        function updateNavigationButtons() {
+            backBtn.disabled = historyIndex <= 0;
+            forwardBtn.disabled = historyIndex >= navigationHistory.length - 1;
+            upBtn.disabled = pathHistory.length <= 1;
+        }
+        
+        // 后退
+        async function goBack() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                const state = navigationHistory[historyIndex];
+                currentDirectoryHandle = state.handle;
+                pathHistory = [...state.path];
+                await loadDirectoryContents(state.handle);
+                updateBreadcrumb();
+                updateNavigationButtons();
+            }
+        }
+        
+        // 前进
+        async function goForward() {
+            if (historyIndex < navigationHistory.length - 1) {
+                historyIndex++;
+                const state = navigationHistory[historyIndex];
+                currentDirectoryHandle = state.handle;
+                pathHistory = [...state.path];
+                await loadDirectoryContents(state.handle);
+                updateBreadcrumb();
+                updateNavigationButtons();
+            }
+        }
+        
+        // 向上
+        async function goUp() {
+            if (pathHistory.length > 1) {
+                pathHistory.pop();
+                const parentHandle = pathHistory[pathHistory.length - 1];
+                currentDirectoryHandle = parentHandle;
+                
+                historyIndex++;
+                navigationHistory = navigationHistory.slice(0, historyIndex);
+                navigationHistory.push({
+                    handle: parentHandle,
+                    path: [...pathHistory]
+                });
+                
+                await loadDirectoryContents(parentHandle);
+                updateBreadcrumb();
+                updateNavigationButtons();
+            }
+        }
+        
+        // 刷新
+        async function refreshDirectory() {
+            if (currentDirectoryHandle) {
+                await loadDirectoryContents(currentDirectoryHandle);
+            }
+        }
+        
+        // 更新排序指示器
+        function updateSortIndicator() {
+            document.querySelectorAll('.header-cell').forEach(cell => {
+                const icon = cell.querySelector('.sort-icon');
+                if (icon) icon.remove();
+            });
+            
+            const activeCell = document.querySelector(`.header-cell[data-sort="${sortBy}"]`);
+            if (activeCell) {
+                const icon = document.createElement('span');
+                icon.className = 'sort-icon';
+                icon.textContent = sortAsc ? '▲' : '▼';
+                activeCell.appendChild(icon);
+            }
+        }
+        
+        // 获取文件类型
+        function getFileType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const types = {
+                'txt': '文本文档',
+                'doc': 'Word 文档',
+                'docx': 'Word 文档',
+                'xls': 'Excel 表格',
+                'xlsx': 'Excel 表格',
+                'ppt': 'PowerPoint 演示',
+                'pptx': 'PowerPoint 演示',
+                'pdf': 'PDF 文档',
+                'jpg': 'JPEG 图像',
+                'jpeg': 'JPEG 图像',
+                'png': 'PNG 图像',
+                'gif': 'GIF 图像',
+                'bmp': 'BMP 图像',
+                'svg': 'SVG 图像',
+                'mp3': 'MP3 音频',
+                'wav': 'WAV 音频',
+                'mp4': 'MP4 视频',
+                'avi': 'AVI 视频',
+                'mkv': 'MKV 视频',
+                'zip': 'ZIP 压缩包',
+                'rar': 'RAR 压缩包',
+                '7z': '7-Zip 压缩包',
+                'html': 'HTML 文件',
+                'css': 'CSS 样式表',
+                'js': 'JavaScript 文件',
+                'json': 'JSON 文件',
+                'xml': 'XML 文件',
+                'py': 'Python 文件',
+                'java': 'Java 文件',
+                'c': 'C 源文件',
+                'cpp': 'C++ 源文件',
+                'h': 'C/C++ 头文件',
+                'exe': '应用程序',
+                'dll': 'DLL 文件',
+                'md': 'Markdown 文件'
+            };
+            return types[ext] || `${ext.toUpperCase()} 文件`;
+        }
+        
+        // 获取文件图标
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                'txt': '📝',
+                'doc': '📘',
+                'docx': '📘',
+                'xls': '📊',
+                'xlsx': '📊',
+                'ppt': '📙',
+                'pptx': '📙',
+                'pdf': '📕',
+                'jpg': '🖼️',
+                'jpeg': '🖼️',
+                'png': '🖼️',
+                'gif': '🖼️',
+                'bmp': '🖼️',
+                'svg': '🖼️',
+                'mp3': '🎵',
+                'wav': '🎵',
+                'mp4': '🎬',
+                'avi': '🎬',
+                'mkv': '🎬',
+                'zip': '📦',
+                'rar': '📦',
+                '7z': '📦',
+                'html': '🌐',
+                'css': '🎨',
+                'js': '⚡',
+                'json': '📋',
+                'xml': '📋',
+                'py': '🐍',
+                'java': '☕',
+                'exe': '⚙️',
+                'md': '📝'
+            };
+            return icons[ext] || '📄';
+        }
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        // 格式化日期
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        }
+        
+        // 显示/隐藏状态
+        function showLoading() {
+            loading.style.display = 'flex';
+            fileList.style.display = 'none';
+            emptyState.style.display = 'none';
+            errorState.style.display = 'none';
+        }
+        
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
+        
+        function showError() {
+            loading.style.display = 'none';
+            fileList.style.display = 'none';
+            emptyState.style.display = 'none';
+            errorState.style.display = 'flex';
+        }
+        
+        // 兼容性检查
+        if (!window.showDirectoryPicker) {
+            emptyState.innerHTML = `
+                <div class="icon">⚠️</div>
+                <h3>浏览器不支持</h3>
+                <p>您的浏览器不支持 File System Access API<br>
+                请使用 Chrome 86+、Edge 86+ 或 Opera 72+ 等现代浏览器</p>
+            `;
+            selectRootBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
